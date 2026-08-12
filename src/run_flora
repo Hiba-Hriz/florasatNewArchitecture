@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ "$INET_ROOT" = "" ]; then
+  echo "Set INET path before running simulation."
+  echo "Execute setinet.sh in main FLoRaSat directory passing the path to INET."
+  exit 1
+fi
+
+PATH=$INET_ROOT/src:$PATH
+
+opp_run -l ../src/flora -n .:../src:$INET_ROOT/src "$@"
+
