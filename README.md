@@ -1,4 +1,20 @@
-# FLoRaSat
+# FLoRaSat — Extended Architecture for LoRaWAN Direct-to-Satellite Communications
+
+FLoRaSat (Framework for LoRa-based Satellite networks) is an OMNeT++-based
+discrete-event simulator designed to perform end-to-end simulations of
+satellite IoT networks using LoRa and LoRaWAN adaptations for the space domain.
+
+The original FLoRaSat simulator is based on an extended version of FLoRa,
+LEOSatellites, OS3, and INET, integrated into a single OMNeT++ framework to
+model space-terrestrial IoT communications.
+
+> **Note:** This repository contains an extended version of FLoRaSat developed
+> for the study of standard-compliant LoRaWAN MAC-layer configurations in
+> Direct-to-Satellite (DtS) communications.
+
+---
+
+## Original FLoRaSat
 
 FLoRaSat (Framework for LoRa-based Satellite networks) is an Omnet++ based discrete-event simulator to carry out end-to-end satellite IoT simulations based on LoRa and LoRaWAN adaptations for the space domain. 
 
