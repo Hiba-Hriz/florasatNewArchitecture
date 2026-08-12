@@ -12,15 +12,15 @@ We modified this architecture by **migrating the Network Server directly on-boar
 
 To align FLoRaSat with the LoRaWAN specification and support a rigorous MAC layer evaluation, we implemented several features that were missing from the original simulator:
 
-- **Multi-channel uplink support**: transmissions now occur across the three mandatory uplink channels (ch0, ch1, ch2), replacing the original single-channel behavior.
+- **Multi-channel uplink support**: transmissions now occur across the three mandatory uplink channels (868.1, 868.3, 868.5), replacing the original single-channel behavior.
 - **ACK scheduling during RX1/RX2**: downlink acknowledgments are scheduled in the correct receive windows following each uplink transmission.
 - **Retransmission procedure**: a standard-compliant retransmission mechanism with randomized back-off (`NbTrans`, `t_off ∈ [1s, 3s]`) is implemented for both confirmed and unconfirmed traffic.
-- **Uplink duty-cycle enforcement**: per-frequency duty-cycle constraints are now enforced at the end-device level (the original implementation only enforced duty-cycle on the downlink/gateway side).
+- **Uplink duty-cycle enforcement**: per-frequency duty-cycle constraints are now enforced at the end-device level (the original implementation only enforced duty-cycle on the gateway side).
 - **Satellite visibility check**: end-devices perform a pre-transmission check (based on elevation angle and slant range) to only transmit when the satellite is within range, isolating collisions as the primary source of packet loss.
 
 ### MAC layer configuration analysis
 
-Building on this standard-compliant foundation, we implemented and compared three channel access schemes — **Pure ALOHA**, **CSMA** (Channel Activity Detection-based), and an **adapted Slotted ALOHA (S-ALOHA)** built on LoRaWAN Class B beacon synchronization — each toggled via a configuration flag. We evaluated their performance in terms of **Packet Delivery Ratio (PDR)** and **estimated battery lifetime**, across:
+Building on this standard-compliant foundation, we implemented and compared three channel access schemes — **Pure ALOHA**, **CSMA** (Channel Activity Detection-based), and ** Slotted ALOHA (S-ALOHA)** built on LoRaWAN Class B beacon synchronization. We evaluated their performance in terms of **Packet Delivery Ratio (PDR)** and **estimated battery lifetime**, across:
 
 - Network sizes from 20 to 1,000 end-devices
 - Confirmed vs. unconfirmed traffic modes
