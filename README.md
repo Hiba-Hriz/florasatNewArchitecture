@@ -1,17 +1,32 @@
-# FLoRaSat — Extended Architecture for LoRaWAN Direct-to-Satellite Communications
+## Our Extended Architecture
 
-FLoRaSat (Framework for LoRa-based Satellite networks) is an OMNeT++-based
-discrete-event simulator designed to perform end-to-end simulations of
-satellite IoT networks using LoRa and LoRaWAN adaptations for the space domain.
+This repository extends the original FLoRaSat simulator to support **standard-compliant LoRaWAN Direct-to-Satellite (DtS) communication** and to enable a systematic **MAC layer configuration analysis**.
 
-The original FLoRaSat simulator is based on an extended version of FLoRa,
-LEOSatellites, OS3, and INET, integrated into a single OMNeT++ framework to
-model space-terrestrial IoT communications.
+### Architecture change: co-located Gateway + Network Server on-board the satellite
 
-> **Note:** This repository contains an extended version of FLoRaSat developed
-> for the study of standard-compliant LoRaWAN MAC-layer configurations in
-> Direct-to-Satellite (DtS) communications.
+In the original FLoRaSat architecture, the LoRaWAN Network Server (NS) resides on the ground segment, while the satellite only embeds the Gateway (GW). This requires every uplink packet received by the satellite to be relayed to the ground before it can be processed, and every downlink response (e.g., an acknowledgment) to travel back up to the satellite — introducing additional delay that is incompatible with the strict RX1/RX2 timing constraints of the LoRaWAN specification during a satellite pass.
 
+We modified this architecture by **migrating the Network Server directly on-board the satellite payload**, co-located with the Gateway. This allows the satellite to receive, process, and respond to uplink transmissions (including scheduling acknowledgments) locally, without depending on a ground round-trip — making it possible to respect the LoRaWAN RECEIVE_DELAY1/RECEIVE_DELAY2 windows within a single satellite pass.
+
+### LoRaWAN standard compliance
+
+To align FLoRaSat with the LoRaWAN specification and support a rigorous MAC layer evaluation, we implemented several features that were missing from the original simulator:
+
+- **Multi-channel uplink support**: transmissions now occur across the three mandatory uplink channels (ch0, ch1, ch2), replacing the original single-channel behavior.
+- **ACK scheduling during RX1/RX2**: downlink acknowledgments are scheduled in the correct receive windows following each uplink transmission.
+- **Retransmission procedure**: a standard-compliant retransmission mechanism with randomized back-off (`NbTrans`, `t_off ∈ [1s, 3s]`) is implemented for both confirmed and unconfirmed traffic.
+- **Uplink duty-cycle enforcement**: per-frequency duty-cycle constraints are now enforced at the end-device level (the original implementation only enforced duty-cycle on the downlink/gateway side).
+- **Satellite visibility check**: end-devices perform a pre-transmission check (based on elevation angle and slant range) to only transmit when the satellite is within range, isolating collisions as the primary source of packet loss.
+
+### MAC layer configuration analysis
+
+Building on this standard-compliant foundation, we implemented and compared three channel access schemes — **Pure ALOHA**, **CSMA** (Channel Activity Detection-based), and an **adapted Slotted ALOHA (S-ALOHA)** built on LoRaWAN Class B beacon synchronization — each toggled via a configuration flag. We evaluated their performance in terms of **Packet Delivery Ratio (PDR)** and **estimated battery lifetime**, across:
+
+- Network sizes from 20 to 1,000 end-devices
+- Confirmed vs. unconfirmed traffic modes
+- Multiple retransmission budgets (`NbTrans` = 1, 3, 8)
+
+This analysis identifies the optimal MAC layer configuration (channel access scheme, traffic mode, and `NbTrans`) depending on network scale, for LoRaWAN-based LEO satellite IoT deployments.
 ---
 
 ## Original FLoRaSat
